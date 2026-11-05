@@ -1,0 +1,46 @@
+package net.engineeringdigest.journalApp.controllers;
+
+import net.engineeringdigest.journalApp.entity.JournalEntryEntity;
+import net.engineeringdigest.journalApp.entity.UserEntity;
+import net.engineeringdigest.journalApp.repository.UserRepo;
+import net.engineeringdigest.journalApp.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+
+@RestController
+@RequestMapping("/user")
+public class UserController {
+    
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserRepo userRepo;
+
+    @PutMapping()
+    public ResponseEntity<?> updateUser(@RequestBody UserEntity user){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity entity = userService.findByUsername(username);
+        if(entity != null){
+            entity.setUsername(user.getUsername());
+            entity.setPassword(user.getPassword());
+            userService.saveNewEntry(entity);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new  ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<UserEntity> deleteUser(){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        userRepo.deleteByUsername(username);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+}
