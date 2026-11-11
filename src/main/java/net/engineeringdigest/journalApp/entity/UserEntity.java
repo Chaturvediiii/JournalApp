@@ -20,6 +20,8 @@ public class UserEntity {
     private String username;
     @NonNull
     private String password;
+    private String email;
+    private String sentimentAnalysis;
 
     @DBRef
     private List<JournalEntryEntity> journalEntries = new ArrayList<>();
