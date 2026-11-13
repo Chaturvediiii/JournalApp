@@ -12,7 +12,7 @@ import java.util.List;
 
 @Data
 @Document("users")
-public class UserEntity {
+public class User {
     @Id
     private String id;
     @Indexed(unique=true)
@@ -21,10 +21,10 @@ public class UserEntity {
     @NonNull
     private String password;
     private String email;
-    private String sentimentAnalysis;
+    private Boolean sentimentAnalysis;
 
     @DBRef
-    private List<JournalEntryEntity> journalEntries = new ArrayList<>();
+    private List<Journal> journalEntries = new ArrayList<>();
 
     private List<String> roles;
 }

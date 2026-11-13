@@ -1,7 +1,6 @@
 package net.engineeringdigest.journalApp.controllers;
 
-import net.engineeringdigest.journalApp.entity.JournalEntryEntity;
-import net.engineeringdigest.journalApp.entity.UserEntity;
+import net.engineeringdigest.journalApp.entity.User;
 import net.engineeringdigest.journalApp.repository.UserRepo;
 import net.engineeringdigest.journalApp.services.UserService;
 import net.engineeringdigest.journalApp.services.WeatherService;
@@ -10,9 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -29,9 +25,9 @@ public class UserController {
     WeatherService weatherService;
 
     @PutMapping()
-    public ResponseEntity<?> updateUser(@RequestBody UserEntity user){
+    public ResponseEntity<?> updateUser(@RequestBody User user){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity entity = userService.findByUsername(username);
+        User entity = userService.findByUsername(username);
         if(entity != null){
             entity.setUsername(user.getUsername());
             entity.setPassword(user.getPassword());
@@ -42,7 +38,7 @@ public class UserController {
     }
 
     @DeleteMapping()
-    public ResponseEntity<UserEntity> deleteUser(){
+    public ResponseEntity<User> deleteUser(){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         userRepo.deleteByUsername(username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

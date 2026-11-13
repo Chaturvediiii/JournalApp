@@ -1,15 +1,13 @@
 package net.engineeringdigest.journalApp.services;
 
-import net.engineeringdigest.journalApp.entity.JournalEntryEntity;
-import net.engineeringdigest.journalApp.entity.UserEntity;
+import net.engineeringdigest.journalApp.entity.Journal;
+import net.engineeringdigest.journalApp.entity.User;
 import net.engineeringdigest.journalApp.repository.JournalEntryRepo;
-import net.engineeringdigest.journalApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,11 +21,11 @@ public class JournalEntryService {
     UserService userService;
 
     @Transactional
-    public void saveEntry(JournalEntryEntity journalEntryEntity, String username){
+    public void saveEntry(Journal journal, String username){
         try{
-            UserEntity user = userService.findByUsername(username);
-            journalEntryEntity.setDate(LocalDateTime.now());
-            JournalEntryEntity entity = journalEntryRepo.save(journalEntryEntity);
+            User user = userService.findByUsername(username);
+            journal.setDate(LocalDateTime.now());
+            Journal entity = journalEntryRepo.save(journal);
             user.getJournalEntries().add(entity);
             userService.saveEntry(user);
         }
@@ -36,22 +34,22 @@ public class JournalEntryService {
         }
     }
 
-    public void saveEntry(JournalEntryEntity journalEntryEntity){
-        journalEntryRepo.save(journalEntryEntity);
+    public void saveEntry(Journal journal){
+        journalEntryRepo.save(journal);
     }
 
-    public List<JournalEntryEntity> getJournalEntries(String username){
-        UserEntity user = userService.findByUsername(username);
+    public List<Journal> getJournalEntries(String username){
+        User user = userService.findByUsername(username);
         return user.getJournalEntries();
     }
 
-    public Optional<JournalEntryEntity> findById(String id){
+    public Optional<Journal> findById(String id){
         return journalEntryRepo.findById(id);
     }
 
     public Boolean deleteJournalEntry(String id, String username){
-        UserEntity user = userService.findByUsername(username);
-        for (JournalEntryEntity entity: user.getJournalEntries()){
+        User user = userService.findByUsername(username);
+        for (Journal entity: user.getJournalEntries()){
             if(entity.getId().equals(id)){
                 user.getJournalEntries().remove(entity);
                 userService.saveEntry(user);
